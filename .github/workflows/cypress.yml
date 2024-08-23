@@ -30,13 +30,14 @@ jobs:
           path: cypress/results/mochawesome.json
 
       - name: Send results to Slack
-        run: |
+         run: |
           if [ $? -eq 0 ]; then
             STATUS="Success"
           else
             STATUS="Failure"
           fi
-          RESULTS=$(cat cypress/results/mochawesome.json)
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Cypress tests: $STATUS\nResults: $RESULTS\"}" $SLACK_WEBHOOK_URL
+          RESULTS=$(cat cypress/results/mochawesome.json | jq -Rs .)
+          TRUNCATED_RESULTS=$(echo $RESULTS | cut -c 1-1000)
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Cypress tests: $STATUS\nResults: $TRUNCATED_RESULTS\"}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
