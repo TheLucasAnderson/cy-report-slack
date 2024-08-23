@@ -8,7 +8,7 @@ module.exports = defineConfig({
     video: false,
     reporter: 'json',
     reporterOptions: {
-      output: 'cypress',
+      output: 'cypress/results',
       outputFile: 'result.json',
     },
   },
