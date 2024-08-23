@@ -32,11 +32,14 @@ jobs:
           name: cypress-results
           path: cypress/results/results.json
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Send Slack notification
         run: |
           JOB_STATUS=$?
           if [ -f cypress/results/results.json ]; then
-            TEST_RESULTS=$(cat cypress/results/results.json)
+            TEST_RESULTS=$(jq -Rs '.' cypress/results/results.json)
           else
             TEST_RESULTS="Nenhum resultado encontrado."
           fi
