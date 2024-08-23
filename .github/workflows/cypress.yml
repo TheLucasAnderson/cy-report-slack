@@ -18,7 +18,7 @@ jobs:
         run: npm install
 
       - name: Run Cypress tests
-        run: npx cypress run
+        run: npx cypress run --reporter json --reporter-options output=cypress/results/results.json
 
       - name: Send results to Slack
         run: |
@@ -27,6 +27,7 @@ jobs:
           else
             STATUS="Failure"
           fi
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Cypress tests: $STATUS\"}" $SLACK_WEBHOOK_URL
+          RESULTS=$(cat cypress/results/results.json)
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Cypress tests: $STATUS\nResults: $RESULTS\"}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
