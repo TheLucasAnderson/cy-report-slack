@@ -21,7 +21,7 @@ jobs:
         run: mkdir -p cypress/results
 
       - name: Run Cypress tests
-        run: npx cypress run --reporter junit --reporter-options "mochaFile=cypress/results/results.xml,toConsole=true"
+        run: npx cypress run
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
@@ -36,7 +36,7 @@ jobs:
           else
             STATUS="Failure"
           fi
-          RESULTS=$(cat cypress/results/results.xml | sed 's/"/\\"/g' | tr -d '\n')
+          RESULTS=$(cat cypress/results/mochawesome.json)
           curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Cypress tests: $STATUS\nResults: $RESULTS\"}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
