@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cypress-results
-          path: cypress/results/results.xml
+          path: cypress/results/mochawesome.json
 
       - name: Send results to Slack
         run: |
