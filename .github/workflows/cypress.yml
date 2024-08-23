@@ -21,7 +21,13 @@ jobs:
         run: mkdir -p cypress/results
 
       - name: Run Cypress tests
-        run: npx cypress run --reporter json --reporter-options output=cypress/results/results.json || echo "Cypress tests failed
+        run: npx cypress run --reporter junit --reporter-options "mochaFile=cypress/results/results.xml,toConsole=true"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-results
+          path: cypress/results/results.xml
 
       - name: Send results to Slack
         run: |
@@ -30,7 +36,7 @@ jobs:
           else
             STATUS="Failure"
           fi
-          RESULTS=$(cat cypress/results/results.json)
+          RESULTS=$(cat cypress/results/results.xml | sed 's/"/\\"/g' | tr -d '\n')
           curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Cypress tests: $STATUS\nResults: $RESULTS\"}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
