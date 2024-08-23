@@ -30,7 +30,7 @@ jobs:
           path: cypress/results/mochawesome.json
 
       - name: Send results to Slack
-         run: |
+         run:
           if [ $? -eq 0 ]; then
             STATUS="Success"
           else
