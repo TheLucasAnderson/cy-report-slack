@@ -32,7 +32,6 @@ jobs:
           path: cypress/results/results.json
 
       - name: Send Slack notification
-          if: always()
           env:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           run: |
@@ -52,5 +51,3 @@ jobs:
                 }
               ]
             }" $SLACK_WEBHOOK_URL
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
