@@ -23,12 +23,6 @@ jobs:
       - name: Run Cypress tests
         run: npx cypress run
         continue-on-error: true
-        
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress-results
-          path: cypress/results/mochawesome.json
 
       - name: Send results to Slack
         run: |
