@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
+
       - name: Install dependencies
         run: npm install
 
@@ -32,22 +33,22 @@ jobs:
           path: cypress/results/results.json
 
       - name: Send Slack notification
-          env:
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          run: |
-            JOB_STATUS=$?
-            TEST_RESULTS=$(cat cypress/results/results.json)
-            if [ "$JOB_STATUS" -eq 0 ]; then
-              STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso."
-            else
-              STATUS_MESSAGE="Os testes do Cypress falharam."
-            fi
-            curl -X POST -H 'Content-type: application/json' --data "{
-              \"text\": \"$STATUS_MESSAGE\",
-              \"attachments\": [
-                {
-                  \"title\": \"Resultados dos Testes\",
-                  \"text\": \"$TEST_RESULTS\"
-                }
-              ]
-            }" $SLACK_WEBHOOK_URL
+        run: |
+          JOB_STATUS=$?
+          TEST_RESULTS=$(cat cypress/results/results.json)
+          if [ "$JOB_STATUS" -eq 0 ]; then
+            STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso."
+          else
+            STATUS_MESSAGE="Os testes do Cypress falharam."
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"$STATUS_MESSAGE\",
+            \"attachments\": [
+              {
+                \"title\": \"Resultados dos Testes\",
+                \"text\": \"$TEST_RESULTS\"
+              }
+            ]
+          }" $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
