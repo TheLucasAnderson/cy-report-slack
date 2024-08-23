@@ -1,0 +1,14 @@
+{
+  "author": "github/TheLucasAnderson",
+  "description": "",
+  "name": "cy-report-slack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "scripts": {
+    "cy": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "13.13.3"
+  }
+}
