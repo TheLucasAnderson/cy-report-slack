@@ -20,8 +20,7 @@ jobs:
         run: mkdir -p cypress/results
 
       - name: Run Cypress tests
-        run: 
-         - |
+        run: |
           npx cypress run --browser chrome --config video=false
           export JOBS_STATUS=$?
           export TEST_RESULTS=$(cat cypress/results.json)
