@@ -24,25 +24,21 @@ jobs:
          - |
           npx cypress run --browser chrome --config video=false
           export JOBS_STATUS=$?
-          export TEST_RESULTS=$(cat cypress/results/results.json)
-
-  slack_notification:
-    script: 
-      - |
-      if [ $? -eq 0 ]; then
-        STATUS_MESSAGE="Success"
-      else
-        STATUS_MESSAGE="Failure"
-      fi
-      TEST_RESULTS=$(cat cypress/results.json)
-      curl -X POST -H 'Content-type: application/json' --data "{
-        \"text\": \"$STATUS_MESSAGE\",
-        \"attachments\": [
-          {
-            \"title\": \"Resultados dos Testes\",
-            \"text\": \"$TEST_RESULTS\"
-          }
-        ]
-      }" $SLACK_WEBHOOK_URL
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          export TEST_RESULTS=$(cat cypress/results.json)
+          if [ $? -eq 0 ]; then
+            STATUS_MESSAGE="Success"
+          else
+            STATUS_MESSAGE="Failure"
+          fi
+          TEST_RESULTS=$(cat cypress/results.json)
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"$STATUS_MESSAGE\",
+            \"attachments\": [
+              {
+                \"title\": \"Resultados dos Testes\",
+                \"text\": \"$TEST_RESULTS\"
+              }
+            ]
+          }" $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
