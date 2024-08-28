@@ -32,12 +32,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: cypress-results
-          path: cypress/results/result.json
+          path: cypress/results/short.json
 
       - name: Send file to Slack
         run: |
-          if [ -f cypress/results/result.json ]; then
-            FILE_CONTENT=$(jq -Rs '.' cypress/results/result.json)
+          if [ -f cypress/results/short.json ]; then
+            FILE_CONTENT=$(jq -Rs '.' cypress/results/short.json)
           else
             FILE_CONTENT="Nenhum arquivo encontrado."
           fi
