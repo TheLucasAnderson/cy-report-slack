@@ -44,3 +44,14 @@ jobs:
           curl -X POST -H 'Content-type: application/json' --data "{\"text\": $FILE_CONTENT}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send specific key to Slack
+        run: |
+          if [ -f results.json ]; then
+            FILE_KEY=$(jq -r '.stats' cypress/results/short.json)
+          else
+            FILE_KEY="Nenhum arquivo encontrado."
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$FILE_KEY\"}" $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
