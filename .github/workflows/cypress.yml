@@ -1,5 +1,4 @@
 name: Cypress Tests
-
 on: [push, pull_request]
 
 jobs:
@@ -54,12 +53,9 @@ jobs:
             STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso."
           else
             STATUS_MESSAGE="Os testes do Cypress falharam."
-          - name: Send Slack notification - Status
-            run: |
-              curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$STATUS_MESSAGE\" }" $SLACK_WEBHOOK_URL
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$STATUS_MESSAGE\" }" $SLACK_WEBHOOK_URL
 
-          - name: Send Slack notification - Test Results
-            run: |
-              curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$TEST_RESULTS\"  }" $SLACK_WEBHOOK_URL       
+          curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$TEST_RESULTS\"  }" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
