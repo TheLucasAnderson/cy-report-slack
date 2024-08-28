@@ -22,41 +22,22 @@ jobs:
       - name: Create results directory
         run: mkdir -p cypress/results
 
-      # - name: Run Cypress tests
-      #   run: |
-      #     npx cypress run --browser chrome --config video=false --reporter json --reporter-options "output=cypress/results/results.json"
-      #   continue-on-error: true
+      - name: Run Cypress tests
+        run: |
+          npx cypress run --browser chrome --config video=false --reporter json --reporter-options "output=cypress/results/results.json"
+        continue-on-error: true
 
       - name: Upload Cypress results
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: cypress-results
-          path: cypress/results/short.json
-
-      - name: Send Slack notification
-        run: |
-          JOB_STATUS=$?
-          if [ -f cypress/results/result.json ]; then
-            FILE_CONTENT=$(jq -Rs '.' cypress/results/result.json)
-          else
-            FILE_CONTENT="Nenhum resultado encontrado."
-          fi
-          if [ "$JOB_STATUS" -eq 0 ]; then
-            STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso - Segue o arquivo:"
-          else
-            STATUS_MESSAGE="Os testes do Cypress falharam."
-          fi
-          curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$STATUS_MESSAGE\" }" $SLACK_WEBHOOK_URL
-
-          curl -X POST -H 'Content-type: application/json' --data "{ \"text\": $FILE_CONTENT}" $SLACK_WEBHOOK_URL
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          path: cypress/results/result.json
 
       - name: Send file to Slack
         run: |
-          if [ -f cypress/results/short.json ]; then
-            FILE_CONTENT=$(jq -Rs '.' cypress/results/short.json)
+          if [ -f cypress/results/result.json ]; then
+            FILE_CONTENT=$(jq -Rs '.' cypress/results/result.json)
           else
             FILE_CONTENT="Nenhum arquivo encontrado."
           fi
