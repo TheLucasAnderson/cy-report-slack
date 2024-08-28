@@ -34,13 +34,6 @@ jobs:
           name: cypress-results
           path: cypress/results/short.json
 
-      - name: Manipulate JSON and Send via curl
-        run: |
-          MANIPULATED_JSON=$(jq '.key = "stats"' cypress/results/short.json)
-          curl -X POST -H 'Content-Type: application/json' -d "$MANIPULATED_JSON" $SLACK_WEBHOOK_URL
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
       - name: Send Slack notification
         run: |
           JOB_STATUS=$?
