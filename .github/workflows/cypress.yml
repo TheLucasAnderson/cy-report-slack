@@ -37,7 +37,7 @@ jobs:
 
       - name: Manipulate JSON and Send via curl
         run: |
-          MANIPULATED_JSON=$(jq '.key = "new_value"' cypress/results/results.json)
+          MANIPULATED_JSON=$(jq '.key = "stats"' cypress/results/results.json)
           curl -X POST -H 'Content-Type: application/json' -d "$MANIPULATED_JSON" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -54,15 +54,19 @@ jobs:
             STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso."
           else
             STATUS_MESSAGE="Os testes do Cypress falharam."
-          fi
-          curl -X POST -H 'Content-type: application/json' --data "{
-            \"text\": \"$STATUS_MESSAGE\",
+          - name: Send Slack notification - Status
+            run: |
+              curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"$STATUS_MESSAGE\"
+              }" $SLACK_WEBHOOK_URL
+
+          - name: Send Slack notification - Test Results
+            run: |
+              curl -X POST -H 'Content-type: application/json' --data "{
             \"attachments\": [
               {
-                \"title\": \"Resultados dos Testes\",
                 \"text\": \"$TEST_RESULTS\"
               }
             ]
-          }" $SLACK_WEBHOOK_URL
-        env:
+              }" $SLACK_WEBHOOK_URL       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
