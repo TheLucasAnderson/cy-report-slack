@@ -48,7 +48,7 @@ jobs:
       - name: Send specific key to Slack
         run: |
           if [ -f cypress/results/result.json ]; then
-            FILE_KEY=$(jq -r '.stats' cypress/results/result.json)
+            FILE_KEY=$(jq -r '.stats' cypress/results/results.json)
           else
             FILE_KEY="Nenhum arquivo encontrado."
           fi
