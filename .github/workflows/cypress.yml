@@ -17,6 +17,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Create results directory
         run: mkdir -p cypress/results
 
@@ -32,8 +35,13 @@ jobs:
           name: cypress-results
           path: cypress/results/results.json
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
+      - name: Manipulate JSON and Send via curl
+        run: |
+          MANIPULATED_JSON=$(jq '.key = "new_value"' cypress/results/results.json)
+          
+          curl -X POST -H 'Content-Type: application/json' -d "$MANIPULATED_JSON" $WEBHOOK_URL
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
       - name: Send Slack notification
         run: |
