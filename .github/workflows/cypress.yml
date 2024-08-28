@@ -52,6 +52,6 @@ jobs:
           else
             FILE_KEY="Nenhum arquivo encontrado."
           fi
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\": $FILE_KEY}" $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$FILE_KEY\"}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
