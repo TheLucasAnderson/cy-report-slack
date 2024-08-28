@@ -38,10 +38,9 @@ jobs:
       - name: Manipulate JSON and Send via curl
         run: |
           MANIPULATED_JSON=$(jq '.key = "new_value"' cypress/results/results.json)
-          
-          curl -X POST -H 'Content-Type: application/json' -d "$MANIPULATED_JSON" $WEBHOOK_URL
+          curl -X POST -H 'Content-Type: application/json' -d "$MANIPULATED_JSON" $SLACK_WEBHOOK_URL
         env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Send Slack notification
         run: |
