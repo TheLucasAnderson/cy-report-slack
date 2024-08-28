@@ -37,18 +37,29 @@ jobs:
       - name: Send Slack notification
         run: |
           JOB_STATUS=$?
-          if [ -f cypress/results/short.json ]; then
-            TEST_RESULTS=$(jq -Rs '.' cypress/results/short.json)
+          if [ -f cypress/results/result.json ]; then
+            FILE_CONTENT=$(jq -Rs '.' cypress/results/result.json)
           else
-            TEST_RESULTS="Nenhum resultado encontrado."
+            FILE_CONTENT="Nenhum resultado encontrado."
           fi
           if [ "$JOB_STATUS" -eq 0 ]; then
-            STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso."
+            STATUS_MESSAGE="Os testes do Cypress foram concluídos com sucesso - Segue o arquivo:"
           else
             STATUS_MESSAGE="Os testes do Cypress falharam."
           fi
           curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$STATUS_MESSAGE\" }" $SLACK_WEBHOOK_URL
 
-          curl -X POST -H 'Content-type: application/json' --data "{ \"text\": \"$TEST_RESULTS\"  }" $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data "{ \"text\": $FILE_CONTENT}" $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send file to Slack
+        run: |
+          if [ -f cypress/results/short.json ]; then
+            FILE_CONTENT=$(jq -Rs '.' cypress/results/short.json)
+          else
+            FILE_CONTENT="Nenhum arquivo encontrado."
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": $FILE_CONTENT}" $SLACK_WEBHOOK_URL
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
